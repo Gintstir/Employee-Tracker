@@ -33,6 +33,8 @@ VALUES
     ("Elmer", "Munoz", 5),
     ("Marion", "Jimenez", 1),
     ("Wesley", "Webster", 1),
-    ("Alice", "George", 7);
+    ("Alice", "George", 7),
+    ("Frank", "Miller", 5),
+    ("Anne", "Hearthcount", 3);
 
 
