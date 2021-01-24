@@ -87,7 +87,7 @@ const openMenu= () => {
 
 
 viewAllDepartments = () => {
-    console.log('Viewing all departments...\n');
+    console.log('Viewing all Departments...\n');
     const query = connection.query(
         'SELECT * FROM department',
 
@@ -100,7 +100,7 @@ viewAllDepartments = () => {
 }
 
 viewAllRoles = () => {
-    console.log('Viewing all employee roles...\n');
+    console.log('Viewing all Employee Roles...\n');
     const query = connection.query(
         'SELECT * FROM role',
 
@@ -113,7 +113,7 @@ viewAllRoles = () => {
 }
 
 viewAllEmployees = () => {
-    console.log('Viewing all employees...\n');
+    console.log('Viewing all Employees...\n');
     const query = connection.query(
         'SELECT * FROM employee',
 
@@ -123,6 +123,41 @@ viewAllEmployees = () => {
             openMenu();
         }
     )
+}
+
+addADepartment = () => {
+    console.log('Adding a new Department...\n');
+    inquirer.prompt([
+        {
+            name: "newDepartment",
+            type: "input",
+            message: "What department would you like to ADD?",
+            validate: departmentAdditionInput => {
+                if(departmentAdditionInput) {
+                    return true;
+                } else {
+                    console.log('Please enter a department name!');
+                    return false;
+                }
+            }
+        }        
+    ])
+    .then(function(answer) {
+        connection.query(
+            'INSERT INTO department SET ?',
+            {
+                department_name: answer.newDepartment
+            },            
+        );
+        const query = connection.query(
+            'SELECT * FROM department',
+            function(err, res) {
+                if(err) throw err;
+                console.table('Departments with your new addition: ', res);
+                openMenu();
+            }
+        )        
+    })    
 }
 
 
