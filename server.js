@@ -171,6 +171,17 @@ viewAllRoles = () => {
 rolesByDepartment = () => {
     console.log('\n');
     console.log('Viewing all roles by Department...\n');
+    console.log('\n');
+
+    const query = connection.query(
+        'SELECT department_name, title, salary FROM department INNER JOIN role ON role.department_id = department.id',
+
+        function(err, res) {
+            if(err) throw err;
+            console.table('Roles by Department: ', res);
+            openMenu();
+        }
+    )
 }
 
 //=============================================================================================================
@@ -379,7 +390,7 @@ quitEmployeeTracker = () => {
     console.log('\n');
     console.log("Thank you for using Employee-Tracker!....\n");
     console.log('\n');
-    
+
     console.log(figlet.textSync('Goodbye', {
         font: 'Big',
         horizontalLayout: 'default',
