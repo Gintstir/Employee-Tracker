@@ -4,7 +4,8 @@ USE employee_db;
 
 CREATE TABLE department (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    department_name VARCHAR(30) NOT NULL
+    department_name VARCHAR(30) NOT NULL,
+    UNIQUE KEY unique_department_name (department_name)
     
 );
 
@@ -13,7 +14,8 @@ CREATE TABLE role (
     title VARCHAR(30) NOT NULL,
     salary DECIMAL(10),
     department_id INT,
-    FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE SET NULL
+    FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE SET NULL,
+    UNIQUE KEY unique_title (title)
     
 );
 

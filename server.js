@@ -6,7 +6,7 @@ const figlet = require('figlet');
 
 
 //==================================================================================================================
-// Connection Properties
+// Create the connection to the database
 const connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -30,6 +30,9 @@ connection.connect(err => {
     }));
     openMenu();
 })
+
+//==================================================================================================================
+// uncomment this and read output to see list of font options
 //Gives a list of figlet fonts for the ascii art banner:
 // figlet.fonts(function(err, fonts) {
 //     if (err) {
@@ -42,6 +45,7 @@ connection.connect(err => {
 
 
 //===================================================================================================================
+//main inquirer menu, give user list of option, return to this menu after every selection
 const openMenu= () => {
     
     inquirer.prompt({
@@ -89,8 +93,9 @@ const openMenu= () => {
     })
 }
 
-
+//Use console.table to display mysql database info
 //==================================================================================================================
+//show all departments
 viewAllDepartments = () => {
     console.log('Viewing all Departments...\n');
     const query = connection.query(
@@ -106,6 +111,7 @@ viewAllDepartments = () => {
 
 
 //=============================================================================================================
+//show all roles
 viewAllRoles = () => {
     console.log('Viewing all Employee Roles...\n');
     const query = connection.query(
@@ -120,7 +126,7 @@ viewAllRoles = () => {
 }
 
 //=============================================================================================================
-
+//show all employees
 viewAllEmployees = () => {
     console.log('Viewing all Employees...\n');
     const query = connection.query(
@@ -137,6 +143,7 @@ viewAllEmployees = () => {
 
 
 //============================================================================================================
+// add a new department to the department table
 addADepartment = () => {
     console.log('Adding a new Department...\n');
     inquirer.prompt([
@@ -159,13 +166,10 @@ addADepartment = () => {
             'INSERT INTO department SET ?',
             {
                 department_name: answer.newDepartment
-            },            
-        );
-        const query = connection.query(
-            'SELECT * FROM department',
+            },       
             function(err, res) {
-                if(err) throw err;
-                console.table('Departments with your new addition: ', res);
+                if(err) throw err;                
+                console.log('New department has been added...\n');
                 openMenu();
             }
         )        
@@ -175,6 +179,8 @@ addADepartment = () => {
 
 
 //==================================================================================================
+//add a new role to the role table- need to access department table so user can pick which department belongs to.  
+//use validation to make sure user enters something.
 addARole = () => {
     console.log('\n');
     console.log("Adding a new Employee Role...\n");
@@ -184,12 +190,12 @@ addARole = () => {
             {
                 name: "newRole",
                 type: "input",
-                message: "What new Employee Role would you like to add?",
+                message: "What new Role would you like to add?",
                 validate: roleAdditionInput => {
                     if(roleAdditionInput) {
                         return true;
                     } else {
-                        console.log("Please enter a valid Employee Role!");
+                        console.log("Please enter a Role!");
                         return false;
                     }
                 }
@@ -216,7 +222,7 @@ addARole = () => {
                 },                    
                 function(err, res) {
                     if(err) throw err;
-                    console.log('You added a new Role!');
+                    console.log('New role has been added...\n');
 
                     openMenu();
                 }
@@ -227,6 +233,7 @@ addARole = () => {
 
 
 //=====================================================================================================================
+//add a new employee to the employee table.  Access role table to allow user to select which role the new employee has.
 addAnEmployee = () => {
     console.log('\n');
     console.log('Adding a new Employee...\n');
@@ -270,6 +277,33 @@ addAnEmployee = () => {
     });    
 };
 
+updateAnEmployeeRole = () => {
+    console.log('\n');
+    console.log('Upadating an Employee role...\n');
+    employee_db_toUpdate().then(employee => {
+        const employeeSelection = role.map(({ name: employee.first_name + " " + employee.last_name, id: value}));
+
+        inquirer.prompt([
+            {
+                name: "employeeToUpdate",
+                type: "list",
+                message: "Which employee would you like to update?",
+                choices: employeeSelection
+            },
+            {
+                name: "newRole",
+                type: "input",
+                message: "What is this employee's new role?"
+            }
+        ])
+        .then(answer => {
+            connection.query(
+                'UPDATE employee SET '
+            )
+        })
+    })
+}
+
 
 //===================================================================================================================
 quitEmployeeTracker = () => {
@@ -288,7 +322,7 @@ quitEmployeeTracker = () => {
 
 
 
-//access role info in database:
+//access role info table in database:
 function role_db() {
     return new Promise((resolve, reject) => {
         connection.query("SELECT * FROM role;",
@@ -298,12 +332,22 @@ function role_db() {
         })
     })
 }
-//access department in database
+//access department table in database
 function dept_db() {
     return new Promise((resolve, reject) => {
         connection.query('SELECT * FROM department;',
         function (err, res) {
             if(err) reject (err);
+            resolve(res);
+        })
+    })
+}
+//access employee table in database
+function employee_db_toUpdate() {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT * FROM employee;',
+        function(err, res) {
+            if (err) reject (err);
             resolve(res);
         })
     })
