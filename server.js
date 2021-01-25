@@ -3,6 +3,9 @@ const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const figlet = require('figlet');
 
+
+
+//==================================================================================================================
 // Connection Properties
 const connection = mysql.createConnection({
     host: "localhost",
@@ -37,6 +40,8 @@ connection.connect(err => {
 //     console.dir(fonts);
 // });
 
+
+//===================================================================================================================
 const openMenu= () => {
     
     inquirer.prompt({
@@ -85,7 +90,7 @@ const openMenu= () => {
 }
 
 
-
+//==================================================================================================================
 viewAllDepartments = () => {
     console.log('Viewing all Departments...\n');
     const query = connection.query(
@@ -99,6 +104,8 @@ viewAllDepartments = () => {
     )
 }
 
+
+//=============================================================================================================
 viewAllRoles = () => {
     console.log('Viewing all Employee Roles...\n');
     const query = connection.query(
@@ -111,6 +118,8 @@ viewAllRoles = () => {
         }
     )
 }
+
+//=============================================================================================================
 
 viewAllEmployees = () => {
     console.log('Viewing all Employees...\n');
@@ -125,6 +134,9 @@ viewAllEmployees = () => {
     )
 }
 
+
+
+//============================================================================================================
 addADepartment = () => {
     console.log('Adding a new Department...\n');
     inquirer.prompt([
@@ -161,8 +173,138 @@ addADepartment = () => {
 }
 
 
+
+//==================================================================================================
+addARole = () => {
+    console.log('\n');
+    console.log("Adding a new Employee Role...\n");
+    dept_db().then(department => {
+        const departmentSelection = department.map(({ name: name, id: value }) => ({name, value}));
+        inquirer.prompt([
+            {
+                name: "newRole",
+                type: "input",
+                message: "What new Employee Role would you like to add?",
+                validate: roleAdditionInput => {
+                    if(roleAdditionInput) {
+                        return true;
+                    } else {
+                        console.log("Please enter a valid Employee Role!");
+                        return false;
+                    }
+                }
+            },
+            {
+                name: "newSalary",
+                type: "number",
+                message: "Please enter a salary for this Role (e.g 35000)."
+            },
+            {
+                name: "departmentChoice",
+                type: "list",
+                message: "Please select which department this Role belongs to.",
+                choices: departmentSelection
+            }        
+        ])
+        .then(function(answer) {
+            connection.query(
+                'INSERT INTO role SET ?',
+                {
+                    title: answer.newRoll,
+                    salary: answer.newSalary,
+                    department_id: answer.departmentChoice
+                },                    
+                function(err, res) {
+                    if(err) throw err;
+                    console.log('You added a new Role!');
+
+                    openMenu();
+                }
+            );    
+        });
+    });    
+};
+
+
+//=====================================================================================================================
+addAnEmployee = () => {
+    console.log('\n');
+    console.log('Adding a new Employee...\n');
+    role_db().then(role => {
+        const roleSelection = role.map(({ title: name, id: value}) => ({name, value}));        
+        inquirer.prompt([
+            {
+                name: "newEmployeeFirstName",
+                type: "input",
+                message: "Please enter the new Emplpoyee's FIRST name."
+            },
+            {
+                name: "newEmployeeLastName",
+                type: "input",
+                message: "Please enter the new Employee's LAST name."
+            },
+            {
+                name: "employee_role",
+                type: 'list',
+                message: "What role does this employee have(Please choose one)?",
+                choices: roleSelection
+                
+            }
+        ])
+        .then(answer => {            
+            connection.query(
+                'INSERT INTO employee SET ?',
+                {
+                first_name: answer.newEmployeeFirstName,
+                last_name: answer.newEmployeeLastName,
+                role_id: answer.employee_role
+                },                     
+                function(err, res) {
+                    if(err) throw err;                    
+                    console.log('You added a new Employee!');
+
+                    openMenu();
+                }
+            );
+        });
+    });    
+};
+
+
+//===================================================================================================================
 quitEmployeeTracker = () => {
-    console.log("Thank you for using Employee-Tracker!....Goodbye \n");
+    console.log("Thank you for using Employee-Tracker!....\n");
+    console.log(figlet.textSync('Goodbye', {
+        font: 'Big',
+        horizontalLayout: 'default',
+        verticalLayout: 'default',
+        width: 80,
+        whitespaceBreak: true
+    }));
     connection.end();
 };
 
+//===========================================================
+
+
+
+//access role info in database:
+function role_db() {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT * FROM role;",
+        function (err, res){
+            if(err) reject (err);
+            resolve(res);
+        })
+    })
+}
+//access department in database
+function dept_db() {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT * FROM department;',
+        function (err, res) {
+            if(err) reject (err);
+            resolve(res);
+        })
+    })
+}
