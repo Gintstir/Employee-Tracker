@@ -30,6 +30,29 @@ connection.connect(err => {
     }));
     openMenu();
 })
+//==================================================================================================================
+
+//access role table in database:
+role_db = () => {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT * FROM role;",
+        function (err, res){
+            if(err) reject (err);
+            resolve(res);
+        })
+    })
+}
+//access department table in database
+dept_db = () => {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT * FROM department;',
+        function (err, res) {
+            if(err) reject (err);
+            resolve(res);
+        })
+    })
+}
+
 
 //==================================================================================================================
 // uncomment this and read output to see list of font options
@@ -55,11 +78,13 @@ const openMenu= () => {
         choices: [
             "View all departments?",
             "View all roles?",
+            "View roles by department",
             "View all employees?",
+            "View all employees by role",
             "Add a department?",
             "Add a role?",            
             "Add an employee?",
-            "Update an employee role?",
+            // "Update an employee role?",
             "Quit"          
         ]
     })
@@ -83,9 +108,12 @@ const openMenu= () => {
             case "Add an employee?":
                 addAnEmployee();
                 break;
-            case "Update an employee role?":
-                updateAnEmployeeRole();
-                break;
+            // case "Update an employee role?":
+            //     updateAnEmployeeRole();
+            //     break;
+            // case "Delete an employee?":
+            //     deleteAnEmployee();
+            //     break;
             case "Quit":
                 quitEmployeeTracker();
                 break;
@@ -95,6 +123,7 @@ const openMenu= () => {
 
 //Use console.table to display mysql database info
 //==================================================================================================================
+
 //show all departments
 viewAllDepartments = () => {
     console.log('Viewing all Departments...\n');
@@ -185,7 +214,7 @@ addARole = () => {
     console.log('\n');
     console.log("Adding a new Employee Role...\n");
     dept_db().then(department => {
-        const departmentSelection = department.map(({ name: name, id: value }) => ({name, value}));
+        const departmentSelection = department.map(({ department_name: name, id: value }) => ({name, value}));
         inquirer.prompt([
             {
                 name: "newRole",
@@ -216,7 +245,7 @@ addARole = () => {
             connection.query(
                 'INSERT INTO role SET ?',
                 {
-                    title: answer.newRoll,
+                    title: answer.newRole,
                     salary: answer.newSalary,
                     department_id: answer.departmentChoice
                 },                    
@@ -276,37 +305,48 @@ addAnEmployee = () => {
         });
     });    
 };
+//========TO DO ==================================================
+//Delete an employe from table
+//deleteAnEmployee = () => {
 
-updateAnEmployeeRole = () => {
-    console.log('\n');
-    console.log('Upadating an Employee role...\n');
-    employee_db_toUpdate().then(employee => {
-        const employeeSelection = role.map(({ name: employee.first_name + " " + employee.last_name, id: value}));
+//}
 
-        inquirer.prompt([
-            {
-                name: "employeeToUpdate",
-                type: "list",
-                message: "Which employee would you like to update?",
-                choices: employeeSelection
-            },
-            {
-                name: "newRole",
-                type: "input",
-                message: "What is this employee's new role?"
-            }
-        ])
-        .then(answer => {
-            connection.query(
-                'UPDATE employee SET '
-            )
-        })
-    })
-}
+
+//==================TO DO=======================================
+// updateAnEmployeeRole = async () => {
+//     console.log('\n');
+//     console.log('Upadating an Employee role...\n');
+
+//     // employee_db_toUpdate().then(employee => {
+        
+//     //     const employeeSelection = employee.map(({ name: employee.first_name + " " + employee.last_name, id: value}));
+
+//     inquirer.prompt([
+//         {
+//             name: "employeeToUpdate",
+//             type: "list",
+//             message: "Which employee would you like to update?",
+//             choices: await employeeSelection()
+//         },
+//         {
+//             name: "newRole",
+//             type: "list",
+//             message: "What is this employee's new role?",
+//             choices: await 
+//         }
+//     ])
+//     .then(answer => {
+//         connection.query(
+//             'UPDATE employee SET '
+//         )
+//     })
+//     })
+// }
 
 
 //===================================================================================================================
 quitEmployeeTracker = () => {
+    console.log('\n');
     console.log("Thank you for using Employee-Tracker!....\n");
     console.log(figlet.textSync('Goodbye', {
         font: 'Big',
@@ -322,33 +362,16 @@ quitEmployeeTracker = () => {
 
 
 
-//access role info table in database:
-function role_db() {
-    return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM role;",
-        function (err, res){
-            if(err) reject (err);
-            resolve(res);
-        })
-    })
-}
-//access department table in database
-function dept_db() {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM department;',
-        function (err, res) {
-            if(err) reject (err);
-            resolve(res);
-        })
-    })
-}
+
+
+//======================TO DO ================================================
 //access employee table in database
-function employee_db_toUpdate() {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM employee;',
-        function(err, res) {
-            if (err) reject (err);
-            resolve(res);
-        })
-    })
-}
+// employee_db = () => {    
+//     return new Promise((resolve, reject) => {        
+//         connection.query('SELECT * FROM employee;',
+//         function(err, res) {
+//             if (err) reject (err);
+//             resolve(res);
+//         })
+//     })
+// }
