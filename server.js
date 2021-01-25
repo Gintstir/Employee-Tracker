@@ -96,8 +96,14 @@ const openMenu= () => {
             case "View all roles?":
                 viewAllRoles();
                 break;
+            case "View all roles by Department":
+                rolesByDepartment();
+                break;
             case "View all employees?":
                 viewAllEmployees();
+                break;
+            case "View all employees by role?":
+                employeesByRole();
                 break;
             case "Add a department?":
                 addADepartment();
@@ -126,7 +132,10 @@ const openMenu= () => {
 
 //show all departments
 viewAllDepartments = () => {
+    console.log('\n');
     console.log('Viewing all Departments...\n');
+    console.log('\n');
+
     const query = connection.query(
         'SELECT * FROM department',
 
@@ -142,7 +151,11 @@ viewAllDepartments = () => {
 //=============================================================================================================
 //show all roles
 viewAllRoles = () => {
+
+    console.log('\n');
     console.log('Viewing all Employee Roles...\n');
+    console.log('\n');
+
     const query = connection.query(
         'SELECT * FROM role',
 
@@ -154,10 +167,19 @@ viewAllRoles = () => {
     )
 }
 
+//==============================================================================================================
+rolesByDepartment = () => {
+    console.log('\n');
+    console.log('Viewing all roles by Department...\n');
+}
+
 //=============================================================================================================
 //show all employees
 viewAllEmployees = () => {
+    console.log('\n');
     console.log('Viewing all Employees...\n');
+    console.log('\n');
+
     const query = connection.query(
         'SELECT * FROM employee',
 
@@ -174,7 +196,10 @@ viewAllEmployees = () => {
 //============================================================================================================
 // add a new department to the department table
 addADepartment = () => {
+    console.log('\n');
     console.log('Adding a new Department...\n');
+    console.log('\n');
+
     inquirer.prompt([
         {
             name: "newDepartment",
@@ -213,6 +238,8 @@ addADepartment = () => {
 addARole = () => {
     console.log('\n');
     console.log("Adding a new Employee Role...\n");
+    console.log('\n');
+
     dept_db().then(department => {
         const departmentSelection = department.map(({ department_name: name, id: value }) => ({name, value}));
         inquirer.prompt([
@@ -264,8 +291,11 @@ addARole = () => {
 //=====================================================================================================================
 //add a new employee to the employee table.  Access role table to allow user to select which role the new employee has.
 addAnEmployee = () => {
+
     console.log('\n');
     console.log('Adding a new Employee...\n');
+    console.log('\n');
+
     role_db().then(role => {
         const roleSelection = role.map(({ title: name, id: value}) => ({name, value}));        
         inquirer.prompt([
@@ -348,6 +378,8 @@ addAnEmployee = () => {
 quitEmployeeTracker = () => {
     console.log('\n');
     console.log("Thank you for using Employee-Tracker!....\n");
+    console.log('\n');
+    
     console.log(figlet.textSync('Goodbye', {
         font: 'Big',
         horizontalLayout: 'default',
