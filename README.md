@@ -21,7 +21,7 @@ The following is the suggested schema that the tables in our database should fol
 
 
 ## **Installation**
-Once the repistory has been cloned, use the command `npm install` or `npm i` to install the necessary dependencies: **[mySQL](https://www.npmjs.com/package/mysql2)**, **[console.table](https://www.npmjs.com/package/console.table)**, **[figlet](https://www.npmjs.com/package/figlet)**, and **[Inquirer](https://www.npmjs.com/package/inquirer)**.  
+Once the repistory has been cloned, use the command `npm install` or `npm i` to install the necessary dependencies: **[mySQL](https://www.npmjs.com/package/mysql2)**, **[console.table](https://www.npmjs.com/package/console.table)**, **[dotenv](https://www.npmjs.com/package/dotenv)**, **[figlet](https://www.npmjs.com/package/figlet)**, and **[Inquirer](https://www.npmjs.com/package/inquirer)**.  
 
 ## **Usage**
 
