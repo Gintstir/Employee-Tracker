@@ -3,6 +3,8 @@ const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const figlet = require('figlet');
 
+require('dotenv').config();
+
 
 
 //==================================================================================================================
@@ -10,9 +12,9 @@ const figlet = require('figlet');
 const connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
-    user: "root",
-    password: "Lietuva1991!",
-    database: "employee_db"
+    user: process.env.DB_USER,
+    password: process.env.DB_PW,
+    database: process.env.DB_NAME
 });
 
 connection.connect(err => {
