@@ -78,9 +78,9 @@ const openMenu= () => {
         choices: [
             "View all departments?",
             "View all roles?",
-            "View roles by department",
+            //"View roles by department",
             "View all employees?",
-            "View all employees by role",
+            //"View all employees by role",
             "Add a department?",
             "Add a role?",            
             "Add an employee?",
@@ -96,15 +96,15 @@ const openMenu= () => {
             case "View all roles?":
                 viewAllRoles();
                 break;
-            case "View all roles by Department":
-                rolesByDepartment();
-                break;
+            // case "View all roles by Department":
+            //     rolesByDepartment();
+            //     break;
             case "View all employees?":
                 viewAllEmployees();
                 break;
-            case "View all employees by role?":
-                employeesByRole();
-                break;
+            // case "View all employees by role?":
+            //     employeesByRole();
+            //     break;
             case "Add a department?":
                 addADepartment();
                 break;
@@ -137,7 +137,7 @@ viewAllDepartments = () => {
     console.log('\n');
 
     const query = connection.query(
-        'SELECT * FROM department',
+        'SELECT * FROM department ORDER BY department.id ASC',
 
         function(err, res) {
             if (err) throw err;
@@ -168,21 +168,23 @@ viewAllRoles = () => {
 }
 
 //==============================================================================================================
-rolesByDepartment = () => {
-    console.log('\n');
-    console.log('Viewing all roles by Department...\n');
-    console.log('\n');
+//show all roles according to what department they belong to
+//why doesnt this work?
+// rolesByDepartment = () => {
+//     console.log('\n');
+//     console.log('Viewing all roles by Department...\n');
+//     console.log('\n');
 
-    const query = connection.query(
-        'SELECT department_name, title, salary FROM department INNER JOIN role ON role.department_id = department.id',
+//     const query = connection.query(
+//         'SELECT department_name, title, salary FROM department INNER JOIN role ON role.department_id = department.id',
 
-        function(err, res) {
-            if(err) throw err;
-            console.table('Roles by Department: ', res);
-            openMenu();
-        }
-    )
-}
+//         function(err, res) {
+//             if(err) throw err;
+//             console.table('Roles by Department: ', res);
+//             openMenu();
+//         }
+//     )
+// }
 
 //=============================================================================================================
 //show all employees
@@ -201,6 +203,26 @@ viewAllEmployees = () => {
         }
     )
 }
+
+//============================================================================================================
+//show all employees by their respective role in the company
+//Why doesnt this work?
+// employeesByRole = () => {
+//     console.log('\n');
+//     console.log('Viewing all Employees by Role...\n');
+//     console.log('\n');
+
+//     const query = connection.query(
+//         'SELECT last_name, first_name, title, salary FROM employee INNER JOIN role ON employee.role_id = role.id;',
+
+//         function(err, res) {
+//             if(err) throw err;
+//             console.table("Employees by Role and Salary: ", res);
+//             openMenu();
+//         }
+//     )
+//     console.log(query.sql)
+// }
 
 
 
